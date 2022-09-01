@@ -1,0 +1,57 @@
+from __future__ import unicode_literals
+import re
+import nltk.corpus
+import nltk.tokenize as tk
+import nltk.data
+from nltk import tokenize
+from nltk.text import TokenSearcher
+from nltk.corpus import PlaintextCorpusReader
+from nltk.text import ConcordanceIndex
+from nltk.corpus import stopwords
+from nltk.corpus import conll2000
+
+keyword1 =input('摘要关键词：')
+openfile=str(keyword1)+"_ab_find.txt"
+tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+fp = open(openfile,newline='',encoding='utf-8')
+data = fp.read()
+ab_list=tokenizer.tokenize(data)
+print(ab_list)
+sentences="\n".join(tokenizer.tokenize(data))
+tokens = tk.sent_tokenize(data)  #分句
+for i, token in enumerate(tokens):
+    print('%2d' % (i + 1), token)
+print('-' * 10)
+
+words = nltk.word_tokenize(sentences)
+tagged = nltk.pos_tag(words)
+#print(tokens[0])
+#print(words)
+#print(tagged)
+#print(ab_list[0][0])
+
+keyword2=input('句子关键词：')
+keywords=[].append(keyword2)
+key_sents=[]
+def get_need_file(sentences,keywords):
+    for word in keywords:
+        file_p = re.findall(r'(.*?)'+word+'(.*?)', sentences)
+        if len(file_p) > 0:
+            key_sents.append(file_p)
+            return sentences
+    return False
+print(key_sents)
+
+
+key_list=[]
+for sent in ab_list:
+    if keyword2 in sent:
+        key_list.append(sent)
+    else:
+        pass
+print(key_list)
+
+endfile=str(keyword2)+"_key_list.txt"
+with open(endfile,'w', newline='',encoding='utf-8') as new:
+    for key_sent in key_list:
+        new.write(key_sent)
